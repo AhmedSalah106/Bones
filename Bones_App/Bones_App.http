@@ -1,0 +1,6 @@
+@Bones_App_HostAddress = http://localhost:5138
+
+GET {{Bones_App_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
