@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using System.Formats.Asn1;
 using System.Threading.Tasks;
 
@@ -15,6 +16,7 @@ namespace Bones_App.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [EnableRateLimiting("Fixed")]
     public class AdminController : ControllerBase
     {
 
@@ -230,7 +232,7 @@ namespace Bones_App.Controllers
 
                 unitOfWork.Save();
 
-                BackgroundJob.Schedule<SpecialistJobs>(s => s.DeleteSpecialist(Id), TimeSpan.FromMinutes(1));
+                BackgroundJob.Schedule<SpecialistJobs>(s => s.DeleteSpecialist(Id), TimeSpan.FromDays(1));
 
 
                 return Ok(new Response<string>("","Specialist Deleted Successfully"));
@@ -260,7 +262,7 @@ namespace Bones_App.Controllers
 
                 unitOfWork.Save();
 
-                BackgroundJob.Schedule<PatientJobs>(s => s.DeletePatient(Id), TimeSpan.FromMinutes(1));
+                BackgroundJob.Schedule<PatientJobs>(s => s.DeletePatient(Id), TimeSpan.FromDays(1));
 
 
                 return Ok(new Response<string>("", "Patient Deleted Successfully"));
