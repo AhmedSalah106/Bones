@@ -20,7 +20,7 @@ namespace Bones_App.Services.Implementation
             List<PatientResponseDTO> patientResponseDTOs = 
                 GetAll().Where(x=>x.IsDeletedUser==false).Select(patient=>new PatientResponseDTO 
                 { Id = patient.Id, Name = patient.Name, Email = patient.Email
-                    ,FreeLimit=patient.FreeLimit }).ToList();
+                    ,FreeLimit=patient.FreeLimit,UserId = patient.UserId }).ToList();
 
             return patientResponseDTOs;
         }
