@@ -43,7 +43,7 @@ namespace Bones_App.Services.Implementation
             List<MessageDTO>messages = chatRepository.GetAll()
                 .Where(msg=>(msg.SenderId == SenderID && msg.ReceiverId == ReceiverId)
                     ||(msg.SenderId==ReceiverId&&msg.ReceiverId==SenderID))
-                        .OrderBy(msg=>msg.SentAt)
+                        .OrderByDescending(msg=>msg.SentAt)
                          .Select(img=>ConvertFromMessageToMessageDTO(img)).ToList();
 
             return messages;

@@ -44,6 +44,29 @@ namespace Bones_App.Controllers
                 });
             }
         }
+        [HttpGet("GetUserIdByEmail")]
+        public async Task<IActionResult> GetUserIdByEmail(string email)
+        {
+            try
+            {
+                ApplicationUser user = await unitOfWork.UserManager.FindByEmailAsync(email);
+                if (user == null)
+                    return NotFound(new Response<string>("no user for this email"));
+
+
+                return Ok(new Response<ApplicationUser>(user));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    Message = "An error occurred while processing your request.",
+                    Details = ex.Message
+                });
+            }
+        }
+
+       
 
         [HttpGet("GetUserRoles")]
         public async Task<IActionResult> GetUserRoles(string UserEmail)
