@@ -12,12 +12,14 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using System.Threading.RateLimiting;
 
 namespace Bones_App
 {
@@ -151,7 +153,27 @@ namespace Bones_App
                 };
             });
 
+            builder.Services.AddRateLimiter(option =>
+            {
+                option.AddFixedWindowLimiter("Fixed", opt =>
+                {
+                    opt.PermitLimit = 5;
+                    opt.Window = TimeSpan.FromSeconds(1);
+                    opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+                    opt.QueueLimit = 0;
+                });
+
+
+                option.RejectionStatusCode = 429;
+            });
+
             var app = builder.Build();
+
+
+            app.UseRateLimiter();
+            app.MapGet("/limited-endpoint", () => "Hello with rate limit!")
+                .RequireRateLimiting("Fixed");
+
 
             // Configure the HTTP request pipeline.
 
