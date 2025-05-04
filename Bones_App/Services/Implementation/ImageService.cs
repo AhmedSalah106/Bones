@@ -1,4 +1,5 @@
 ﻿using Bones_App.DTOs;
+using Bones_App.Exceptions;
 using Bones_App.Models;
 using Bones_App.Repositories.Interfaces;
 using Bones_App.Services.Interfaces;
@@ -8,12 +9,13 @@ namespace Bones_App.Services.Implementation
 {
     public class ImageService:Service<Image> , IImageService
     {
+
         private readonly IImageRepository imageRepository;
         public ImageService(IImageRepository imageRepository):base(imageRepository)
         {
             this.imageRepository = imageRepository;
         }
-
+         
         public List<ImageResponseDTO> GetAllUserImagesDTO(int UserId)
         {
             List<ImageResponseDTO> AllImagesDTO
@@ -23,7 +25,7 @@ namespace Bones_App.Services.Implementation
 
             return AllImagesDTO;
         }
-
+            
         public ImageResponseDTO GetImageResponseDTO(Image image)
         {
             ImageResponseDTO ImageDTO = new ImageResponseDTO()
@@ -35,5 +37,36 @@ namespace Bones_App.Services.Implementation
 
             return ImageDTO;
         }
+
+
+        public Response<List<ImageResponseDTO>> RetrieveImage(RetrieveImageDTO imageDTO)
+        {
+            
+            
+
+            if(imageDTO.UserRole!="patient"&&imageDTO.UserRole!="specialist")
+            {
+                throw new CustomException("Enter Valid Role");
+            }
+
+                
+            List<ImageResponseDTO> Images = GetAllUserImagesDTO(imageDTO.UserId);
+
+            if (Images == null || Images.Count == 0)
+            {
+                throw new CustomException("User has not uploaded any images Yet!");
+            }
+
+            Response<List<ImageResponseDTO>> response = new Response<List<ImageResponseDTO>>()
+            {
+                Data = Images,
+                Success = true,
+                Message = "Successfully Retrieve all Images"
+            };
+
+            return response;
+            
+        }
+
     }
 }

@@ -1,10 +1,13 @@
 ﻿using Bones_App.DTOs;
 using Bones_App.Helpers;
 using Bones_App.Models;
+using Bones_App.Queries.PatientQuries;
 using Bones_App.Services.Interfaces;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
+using System.Threading.Tasks;
 
 namespace Bones_App.Controllers
 {
@@ -13,19 +16,22 @@ namespace Bones_App.Controllers
     [EnableRateLimiting("Fixed")]
     public class PatientController : ControllerBase
     {
-        private readonly IUnitOfWork unitOfWork;
-        public PatientController(IUnitOfWork unitOfWork)
+        private readonly IMediator mediator;
+        public PatientController(IMediator mediator)
         {
-            this.unitOfWork = unitOfWork;
+            this.mediator = mediator;
         }
 
         [HttpGet("GetAll")]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
             try
             {
-                List<PatientResponseDTO> patientResponseDTOs = 
-                    unitOfWork.PatientService.GatAllPatientResponseDTOs();
+
+                var Query = new GetAllQuery();
+
+                List<PatientResponseDTO> patientResponseDTOs =
+                   await  mediator.Send(Query);
 
                 if (patientResponseDTOs == null || patientResponseDTOs.Count() == 0)
                 {

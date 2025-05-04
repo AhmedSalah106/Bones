@@ -1,4 +1,5 @@
 
+using Bones_App.CustomMiddleWare;
 using Bones_App.Helpers;
 using Bones_App.Hubs;
 using Bones_App.Models;
@@ -68,6 +69,12 @@ namespace Bones_App
         });
             });
 
+
+            builder.Services.AddMediatR(option =>
+            {
+                option.RegisterServicesFromAssembly(typeof(Program).Assembly);
+            });
+
             builder.Services.AddScoped<IPatientRepository, PatientRepository>();
             builder.Services.AddScoped<IPatientService, PatientService>();
 
@@ -88,6 +95,8 @@ namespace Bones_App
 
             builder.Services.AddScoped<IAdminRepository, AdminRepository>();
             builder.Services.AddScoped<IAdminService, AdminService>();
+
+            builder.Services.AddScoped<IModelIntegrationService,ModelIntegrationService>();
 
             builder.Services.AddScoped<ISpecialistRateRepository, SpecialistRateRepository>();
             builder.Services.AddScoped<ISpecialistRateService, SpecialistRateService>();
@@ -167,8 +176,16 @@ namespace Bones_App
                 option.RejectionStatusCode = 429;
             });
 
+            builder.Services.AddControllers()
+    .ConfigureApiBehaviorOptions(options =>
+    {
+        options.SuppressModelStateInvalidFilter = true;
+    });
+
+
             var app = builder.Build();
 
+            app.UseMiddleware<ExceptionMiddleWare>();
 
             app.UseRateLimiter();
             app.MapGet("/limited-endpoint", () => "Hello with rate limit!")

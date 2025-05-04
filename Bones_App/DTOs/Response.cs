@@ -1,4 +1,5 @@
-﻿namespace Bones_App.DTOs
+﻿
+namespace Bones_App.DTOs
 {
     public class Response<T>
     {
@@ -17,6 +18,12 @@
             Success = false;
             this.Message = Message;
         }
-        
+
+        public Response()
+        {
+
+        }
+
+       
     }
 }

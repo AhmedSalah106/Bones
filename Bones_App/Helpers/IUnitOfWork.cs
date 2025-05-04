@@ -12,6 +12,7 @@ namespace Bones_App.Helpers
         public IpaymentTransactionService PaymentTransactionService { get;}
         public ISpecialistService SpecialistService { get;}
         public IChatService ChatService { get;}
+        public IModelIntegrationService ModelIntegrationService { get;}
         public SignInManager<ApplicationUser> signInManager { get;}
         public UserManager<ApplicationUser> UserManager { get;} 
         public IEmailService EmailService { get;}

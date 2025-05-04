@@ -12,6 +12,7 @@ namespace Bones_App.Helpers
         public IPatientService PatientService { get; }
         public ISpecialistService SpecialistService { get; }
         public IChatService ChatService {  get; }
+        public IModelIntegrationService ModelIntegrationService { get; }
         public IpaymentTransactionService PaymentTransactionService { get; }
         public SignInManager<ApplicationUser> signInManager { get; }
         public IAdminService AdminService { get; }
@@ -21,7 +22,8 @@ namespace Bones_App.Helpers
         public IEmailService EmailService { get; }
         public IConfiguration configuration { get; }
         public IWebHostEnvironment webHostEnvironment { get; }
-        public UnitOfWork(IChatService chatService
+        public UnitOfWork(IModelIntegrationService modelIntegrationService
+            ,IChatService chatService
             ,IpaymentTransactionService paymentTransactionService
             ,IAdminService adminService
             ,ISpecialistRateService specialistRateService
@@ -36,6 +38,7 @@ namespace Bones_App.Helpers
                          , UserManager<ApplicationUser> userManager
                          , RoleManager<IdentityRole> roleManager)
         {
+            this.ModelIntegrationService = modelIntegrationService;
             this.ChatService = chatService;
             this.PaymentTransactionService = paymentTransactionService;
             this.AdminService = adminService;
