@@ -1,4 +1,5 @@
 ﻿using Bones_App.DTOs;
+using Bones_App.Exceptions;
 using Bones_App.Helpers;
 using Bones_App.Models;
 using Bones_App.Repositories;
@@ -6,6 +7,7 @@ using Bones_App.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -32,6 +34,7 @@ namespace Bones_App.Controllers
         {
             try
             {
+
                 if (!ModelState.IsValid)
                 {
                     return BadRequest(new
@@ -40,6 +43,7 @@ namespace Bones_App.Controllers
                         Errors = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage)
                     });
                 }
+
 
                 userDTO.Role = userDTO.Role.ToLower();
                 if (userDTO.Role != "admin" && userDTO.Role != "patient" && userDTO.Role != "specialist")
@@ -66,9 +70,6 @@ namespace Bones_App.Controllers
 
                 if (result.Succeeded == true)
                 {
-
-
-
                     if (userDTO.Role == "patient")
                     {
                         user.IsVerified = true;
@@ -151,7 +152,7 @@ namespace Bones_App.Controllers
                 return StatusCode(500, new
                 {
                     Message = "An error occurred while processing your request.",
-                    Details = ex.Message 
+                    Details = ex.Message
                 });
             }
 
@@ -238,8 +239,10 @@ namespace Bones_App.Controllers
                 JWTResponseDTO jWTResponse = new JWTResponseDTO()
                 {
                     Expire = jwt.ValidTo,
-                    Token = new JwtSecurityTokenHandler().WriteToken(jwt)
+                    Token = new JwtSecurityTokenHandler().WriteToken(jwt),
+                    UserId = user.Id
                 };
+
 
                 return Ok(new Response<JWTResponseDTO>(jWTResponse,"Successfully Create Token"));
 

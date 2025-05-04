@@ -16,6 +16,8 @@ namespace Bones_App.Services.Implementation
 
         public AdminResponseDTO ConvertFromAdminToAdminResponseDTO(Admin admin)
         {
+
+            
             AdminResponseDTO adminResponse = new AdminResponseDTO()
             {
                 Email = admin.Email,

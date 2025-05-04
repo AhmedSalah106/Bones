@@ -10,5 +10,6 @@ namespace Bones_App.Services.Interfaces
         List<ImageResponseDTO> GetAllUserImagesDTO(int UserId);
 
         ImageResponseDTO GetImageResponseDTO(Image image);
+        Response<List<ImageResponseDTO>> RetrieveImage(RetrieveImageDTO imageDTO);
     }
 }

@@ -4,7 +4,7 @@ namespace Bones_App.DTOs
 {
     public class RegisterDTO
     {
-        [Required,MinLength(2,ErrorMessage ="Minimum Length is 2"),MaxLength(50,ErrorMessage ="Maximum Length is 50")]
+        [Required,MinLength(2),MaxLength(50,ErrorMessage ="Maximum Length is 50")]
         public string FullName { get; set; }
 
         [Required, MinLength(2, ErrorMessage = "Minimum Length is 2"), MaxLength(50, ErrorMessage = "Maximum Length is 50")]

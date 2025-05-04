@@ -22,11 +22,12 @@ namespace Bones_App.Controllers
             try
             {
                 if (!ModelState.IsValid)
-                {
+                {       
                     return BadRequest(new Response<string>(ModelState.ToString()));
                 }
 
                 SpecialistRate specialistRate = unitOfWork.specialistRateService.GetPatientRatingForSpecialist(rateDTO.SpecialistId, rateDTO.PatientId);
+
                 if (specialistRate == null)
                 {
                     specialistRate = unitOfWork.specialistRateService.ConvertToSpecialistRate(rateDTO);
@@ -90,6 +91,7 @@ namespace Bones_App.Controllers
                 {
                     return NotFound(new Response<string>("No Rates Added Yet"));
                 }
+
                 return Ok(new Response<List<SpecialistRate>>(specialistRates,"All Rates Successfully Retrieved"));
 
             }

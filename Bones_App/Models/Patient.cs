@@ -7,7 +7,7 @@ namespace Bones_App.Models
     public class Patient
     {
         public int Id { get; set; }
-        [MinLength(2) , MaxLength(50)]
+        [MinLength(3) , MaxLength(50)]
         public string Name { get; set; }
         [EmailAddress(ErrorMessage ="Enter Valid E-mail")]
         public string? Email { get; set; }
