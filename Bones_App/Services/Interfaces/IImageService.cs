@@ -7,9 +7,9 @@ namespace Bones_App.Services.Interfaces
 {
     public interface IImageService:IService<Image> 
     {
-        List<ImageResponseDTO> GetAllUserImagesDTO(int UserId);
+        List<ImageResponseDTO> GetAllUserImagesDTO(string Id);
 
         ImageResponseDTO GetImageResponseDTO(Image image);
-        Response<List<ImageResponseDTO>> RetrieveImage(RetrieveImageDTO imageDTO);
+        Response<List<ImageResponseDTO>> RetrieveImage(string Id);
     }
 }

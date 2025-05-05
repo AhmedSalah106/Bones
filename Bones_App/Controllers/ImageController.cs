@@ -1,5 +1,4 @@
-﻿using Bones_App.Commands.ImageCommand;
-using Bones_App.DTOs;
+﻿using Bones_App.DTOs;
 using Bones_App.Exceptions;
 using Bones_App.Helpers;
 using Bones_App.Models;
@@ -8,6 +7,7 @@ using MediatR;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -29,20 +29,16 @@ namespace Bones_App.Controllers
             this.webHostEnvironment = webHostEnvironment;
         }
 
-        [HttpPost("RetrieveImages")]
-        public async Task<ActionResult<Response<List<ImageResponseDTO>>>> RetrieveImage(RetrieveImageDTO imageDTO)
-        {
-            return await mediator.Send(new RetrieveImagesCommand(imageDTO));
-        }
-
-
+        
 
         [HttpPost("UploadImage")]
         public IActionResult UploadImage([FromForm] UploadImageDTO imageDTO) 
         {
             try
             {
-        
+
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
                 string wRootPathe = Path.Combine(webHostEnvironment.WebRootPath, "Images");
                 string ImageName = Guid.NewGuid().ToString() + "_" + imageDTO.ImageFile.FileName;
                 string ImagePath = Path.Combine(wRootPathe, ImageName);
@@ -55,8 +51,10 @@ namespace Bones_App.Controllers
                 Image image = new Image()
                 {
                     ImageURL = Path.Combine("/Images",ImageName),
-                    PatientID = imageDTO.UserId,
-                    UploadedAt = imageDTO.UploadedAt
+                    PatientID = imageDTO.Id,
+                    UploadedAt = imageDTO.UploadedAt,
+                    UserId = userId
+                    
                 };
 
                 unitOfWork.ImageService.Insert(image);

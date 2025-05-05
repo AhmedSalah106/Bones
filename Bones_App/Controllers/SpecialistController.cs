@@ -1,7 +1,5 @@
 ﻿using Bones_App.DTOs;
-using Bones_App.Handlers.QueriesHandler.PatientQueriesHandler;
 using Bones_App.Helpers;
-using Bones_App.Queries.SpecialistQueries;
 using Bones_App.Services.Implementation;
 using Bones_App.Services.Interfaces;
 using MediatR;
@@ -16,20 +14,22 @@ namespace Bones_App.Controllers
     public class SpecialistController : ControllerBase
     {
 
-        private readonly IMediator mediator;
-        public SpecialistController(IMediator mediator)
+        private readonly IUnitOfWork unitOfWork;
+        public SpecialistController(IUnitOfWork unitOfWork)
         {
-            this.mediator = mediator;
+            this.unitOfWork = unitOfWork;
         }
+        
+
+
 
         [HttpGet("GetAll")]
-        public async Task<IActionResult> GetAll()
+        public IActionResult GetAll()
         {
             try
             {
-                var Query = new GetAllQuery();
                 List<SpecialistResponseDTO> specialists =
-                    await mediator.Send(Query);
+                    unitOfWork.SpecialistService.GetSpecialistDTOs(unitOfWork.SpecialistService.GetAll());
 
                 if (specialists == null || specialists.Count() == 0)
                 {
@@ -49,6 +49,24 @@ namespace Bones_App.Controllers
 
         }
 
+
+        [HttpGet("GetAllSpecialistUploadedImages")]
+        public IActionResult GetAllSpecialistUploadedImages(string Id)
+        {
+            try
+            {
+                Response<List<ImageResponseDTO>> images = unitOfWork.ImageService.RetrieveImage(Id);
+                return Ok(images);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    Success = false,
+                    Details = ex.Message
+                });
+            }
+        }
 
     }
 }

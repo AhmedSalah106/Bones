@@ -216,7 +216,6 @@ namespace Bones_App
 
                 var unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
                 var context = scope.ServiceProvider.GetRequiredService<BonesContext>();
-                DbInitializer.SeedAdmin(unitOfWork, context);
             }
 
             app.UseStaticFiles();

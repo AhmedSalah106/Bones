@@ -11,6 +11,7 @@ namespace Bones_App.Models
         [ForeignKey("Patient")]
         public int PatientID { get; set; }
         public Patient? Patient { get; set; }
+        public string UserId { get; set; } = string.Empty;
 
     }
 }

@@ -30,8 +30,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Queries\AdminQueries\" />
-    <Folder Include="Queries\ImageQueries\" />
     <Folder Include="wwwroot\Images\" />
   </ItemGroup>
 
