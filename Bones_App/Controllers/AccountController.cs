@@ -172,7 +172,7 @@ namespace Bones_App.Controllers
                         Errors = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage)
                     });
                 }
-
+                int _Id = 0;
                 ApplicationUser user = await unitOfWork.UserManager.FindByNameAsync(userDTO.Email);
                 if (user == null)
                 {
@@ -185,6 +185,7 @@ namespace Bones_App.Controllers
                     {
                         return NotFound(new Response<string>("Invalid Data"));
                     }
+                    _Id = patient.Id;
                 }
                 else if (userDTO.Role == "specialist") 
                 {
@@ -193,6 +194,7 @@ namespace Bones_App.Controllers
                     {
                         return NotFound(new Response<string>("Invalid Data"));
                     }
+                    _Id = specialist.Id;
                 }
                 else if(userDTO.Role =="admin")
                 {
@@ -201,6 +203,7 @@ namespace Bones_App.Controllers
                     {
                         return NotFound(new Response<string>("Invalid Data"));
                     }
+                    _Id = admin.Id;
                 }
                 
 
@@ -240,7 +243,8 @@ namespace Bones_App.Controllers
                 {
                     Expire = jwt.ValidTo,
                     Token = new JwtSecurityTokenHandler().WriteToken(jwt),
-                    UserId = user.Id
+                    UserId = user.Id,
+                    Id = _Id
                 };
 
 
