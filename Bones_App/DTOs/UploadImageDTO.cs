@@ -2,7 +2,7 @@
 {
     public class UploadImageDTO
     {
-        public int UserId {  get; set; }
+        public int Id {  get; set; }
         public IFormFile ImageFile { get; set; }
         public DateTime UploadedAt { get; set; }
 

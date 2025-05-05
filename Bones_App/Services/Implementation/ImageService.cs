@@ -16,12 +16,12 @@ namespace Bones_App.Services.Implementation
             this.imageRepository = imageRepository;
         }
          
-        public List<ImageResponseDTO> GetAllUserImagesDTO(int UserId)
+        public List<ImageResponseDTO> GetAllUserImagesDTO(string Id)
         {
+
             List<ImageResponseDTO> AllImagesDTO
-                = GetAll().Where(img=>img.PatientID==UserId).Select(img => new ImageResponseDTO 
-                    { Id = img.Id, UploadedAt = img.UploadedAt, 
-                        ImageUrl = img.ImageURL }).ToList();
+                = GetAll().Where(img=>img.UserId==Id).Select(img => new ImageResponseDTO 
+                    { Id = img.Id , ImageUrl = img.ImageURL , UploadedAt = img.UploadedAt }).ToList();
 
             return AllImagesDTO;
         }
@@ -39,18 +39,14 @@ namespace Bones_App.Services.Implementation
         }
 
 
-        public Response<List<ImageResponseDTO>> RetrieveImage(RetrieveImageDTO imageDTO)
+        public Response<List<ImageResponseDTO>> RetrieveImage(string Id)
         {
             
             
 
-            if(imageDTO.UserRole!="patient"&&imageDTO.UserRole!="specialist")
-            {
-                throw new CustomException("Enter Valid Role");
-            }
-
+            
                 
-            List<ImageResponseDTO> Images = GetAllUserImagesDTO(imageDTO.UserId);
+            List<ImageResponseDTO> Images = GetAllUserImagesDTO(Id);
 
             if (Images == null || Images.Count == 0)
             {

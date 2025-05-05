@@ -16,6 +16,8 @@ namespace Bones_App.Controllers
         {
             this.unitOfWork = unitOfWork;
         }
+        
+
 
         [HttpPost("PredictSingleImage")]
 
@@ -24,6 +26,8 @@ namespace Bones_App.Controllers
             if (predictRequest.imageFile == null || predictRequest.imageFile.Length == 0)
                 return BadRequest(new Response<string>("No image provided"));
 
+
+
             var result = await unitOfWork.ModelIntegrationService.SendImageToModelAsync(predictRequest.imageFile);
 
             if (!result.Is_Success)
@@ -31,6 +35,8 @@ namespace Bones_App.Controllers
 
             return Ok(new Response<ModelApiData>(result.Data, "Prediction submitted successfully"));
         }
+
+
 
         [HttpPost("PredictSingleImageWithBodyPart")]
         public async Task <IActionResult> PredictSingleImageWithBodyPart([FromForm]PredictImageWithBodyPartDTO predictImageWithBodyPart)
@@ -45,6 +51,8 @@ namespace Bones_App.Controllers
 
             return Ok(new Response<ModelApiData>(result.Data, "Prediction submitted successfully"));
         }
+
+
 
         [HttpGet("GetReportById")]
         public async Task<IActionResult> GetReport(Guid ReportId)
