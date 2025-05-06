@@ -20,7 +20,7 @@ namespace Bones_App.Services.Implementation
             List<PatientResponseDTO> patientResponseDTOs = 
                 GetAll().Where(x=>x.IsDeletedUser==false).Select(patient=>new PatientResponseDTO 
                 { Id = patient.Id, Name = patient.Name, Email = patient.Email
-                    ,FreeLimit=patient.FreeLimit,UserId = patient.UserId }).ToList();
+                    ,FreeLimit=patient.FreeLimit,UserId = patient.UserId  , PhoneNumber = patient.PhoneNumber}).ToList();
 
             return patientResponseDTOs;
         }
@@ -52,7 +52,8 @@ namespace Bones_App.Services.Implementation
                 Id = patient.Id,
                 Name = patient.Name,
                 Email = patient.Email,
-                FreeLimit = patient.FreeLimit
+                FreeLimit = patient.FreeLimit,
+                PhoneNumber = patient.PhoneNumber
             };
 
             return patientResponse;
@@ -97,7 +98,6 @@ namespace Bones_App.Services.Implementation
         public Patient GetByUserId(string UserId)
         {
             Patient patient= repository.GetByUserId(UserId);
-            Patient patient1 = patient;
             return patient;
         }
     }

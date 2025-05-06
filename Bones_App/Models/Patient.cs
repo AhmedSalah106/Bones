@@ -11,6 +11,7 @@ namespace Bones_App.Models
         public string Name { get; set; }
         [EmailAddress(ErrorMessage ="Enter Valid E-mail")]
         public string? Email { get; set; }
+        public string PhoneNumber {  get; set; } = string.Empty;
         [ForeignKey("User")]
         public string UserId {  get; set; }
         public ApplicationUser User { get; set; }
