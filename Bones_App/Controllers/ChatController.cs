@@ -47,6 +47,7 @@ namespace Bones_App.Controllers
                 });
             }
         }
+
         [HttpPost("SendMessage")]
         public async Task<IActionResult> SendMessage(MessageDTO messageDTO)
         {
@@ -79,6 +80,7 @@ namespace Bones_App.Controllers
             }
 
         }
+
 
         [HttpGet("GetAllMessages")]
         public IActionResult GetAllMessages()

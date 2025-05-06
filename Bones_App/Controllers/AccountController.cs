@@ -1,6 +1,7 @@
 ﻿using Bones_App.DTOs;
 using Bones_App.Exceptions;
 using Bones_App.Helpers;
+using Bones_App.Migrations;
 using Bones_App.Models;
 using Bones_App.Repositories;
 using Bones_App.Services.Interfaces;
@@ -79,7 +80,8 @@ namespace Bones_App.Controllers
                             Email = userDTO.Email,
                             User = user,
                             IsPaidUser = false,
-                            FreeLimit = 2
+                            FreeLimit = 2,
+                            PhoneNumber = userDTO.PhoneNumber
                         };
                         
                         result =await unitOfWork.UserManager.AddToRoleAsync(user,"Patient");
@@ -172,7 +174,8 @@ namespace Bones_App.Controllers
                         Errors = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage)
                     });
                 }
-                int _Id = 0;
+                LoginResponseUserDataDTO userDataDTO = new LoginResponseUserDataDTO();
+                
                 ApplicationUser user = await unitOfWork.UserManager.FindByNameAsync(userDTO.Email);
                 if (user == null)
                 {
@@ -185,7 +188,10 @@ namespace Bones_App.Controllers
                     {
                         return NotFound(new Response<string>("Invalid Data"));
                     }
-                    _Id = patient.Id;
+                    userDataDTO.Id = patient.Id;
+                    userDataDTO.Email = userDTO.Email;
+                    userDataDTO.PhoneNumber = patient.PhoneNumber;
+                    userDataDTO.UserName = patient.Name;
                 }
                 else if (userDTO.Role == "specialist") 
                 {
@@ -194,7 +200,10 @@ namespace Bones_App.Controllers
                     {
                         return NotFound(new Response<string>("Invalid Data"));
                     }
-                    _Id = specialist.Id;
+                    userDataDTO.Id = specialist.Id;
+                    userDataDTO.Email = userDTO.Email;
+                    userDataDTO.PhoneNumber = userDataDTO.PhoneNumber;
+                    userDataDTO.UserName = specialist.Name;
                 }
                 else if(userDTO.Role =="admin")
                 {
@@ -203,7 +212,10 @@ namespace Bones_App.Controllers
                     {
                         return NotFound(new Response<string>("Invalid Data"));
                     }
-                    _Id = admin.Id;
+                    userDataDTO.Id = admin.Id;
+                    userDataDTO.Email = admin.Email;
+                    userDataDTO.PhoneNumber = null;
+                    userDataDTO.UserName = admin.Name;
                 }
                 
 
@@ -244,7 +256,7 @@ namespace Bones_App.Controllers
                     Expire = jwt.ValidTo,
                     Token = new JwtSecurityTokenHandler().WriteToken(jwt),
                     UserId = user.Id,
-                    Id = _Id
+                    UserData = userDataDTO
                 };
 
 
