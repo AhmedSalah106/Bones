@@ -1,4 +1,5 @@
 ﻿using Bones_App.Exceptions;
+using Bones_App.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
@@ -29,7 +30,26 @@ namespace Bones_App.CustomMiddleWare
 
                 await context.Response.WriteAsync(ErrorResponseJson);
             }
-            catch(DbUpdateException DbException)
+            catch (UnauthorizedAccessException unAuthorizedAccess)
+            {
+                context.Response.StatusCode = 403;
+                context.Response.ContentType = "application/json";
+
+                var errorResponse = new ErrorResponse
+                {
+                    statusCode = 403,
+                    Errors = new List<string>
+                    {
+                        "Unauthorized access",
+                        unAuthorizedAccess.Message
+                    }
+                };
+
+                var errorResponseJson = JsonSerializer.Serialize(errorResponse);
+                await context.Response.WriteAsync(errorResponseJson);
+            }
+
+            catch (DbUpdateException DbException)
             {
                 context.Response.StatusCode = 500;
                 context.Response.ContentType = "application/json";

@@ -11,6 +11,7 @@ namespace Bones_App.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles ="Admin")]
     public class RoleController : ControllerBase
     {
         private readonly IUnitOfWork unitOfWork;

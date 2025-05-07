@@ -17,11 +17,12 @@ namespace Bones_App.Controllers
     [ApiController]
     public class ImageController : ControllerBase
     {
+
         private readonly IUnitOfWork unitOfWork;
         private readonly IWebHostEnvironment webHostEnvironment;
 
         private readonly IMediator mediator;
-        public ImageController(IMediator mediator,IUnitOfWork unitOfWork
+        public ImageController(IMediator mediator, IUnitOfWork unitOfWork
             , IWebHostEnvironment webHostEnvironment)
         {
             this.mediator = mediator;
@@ -29,40 +30,48 @@ namespace Bones_App.Controllers
             this.webHostEnvironment = webHostEnvironment;
         }
 
-        
+
 
         [HttpPost("UploadImage")]
-        public IActionResult UploadImage([FromForm] UploadImageDTO imageDTO) 
+        public async Task<IActionResult> UploadImage([FromForm] UploadImageDTO imageDTO)
         {
             try
             {
 
-                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                // var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var userId = "710f901a-ea6d-47e6-ac66-4ef8cb37c428";
+                ModelAPIsBatchResponseDTO response = await unitOfWork.ModelIntegrationService.GetModelReport(imageDTO);
 
-                string wRootPathe = Path.Combine(webHostEnvironment.WebRootPath, "Images");
-                string ImageName = Guid.NewGuid().ToString() + "_" + imageDTO.ImageFile.FileName;
-                string ImagePath = Path.Combine(wRootPathe, ImageName);
 
-                using (FileStream fileStream = new FileStream(ImagePath, FileMode.Create))
+                if (response.Is_Success == false)
+                    return Ok(new Response<string>(response.Error_Message));
+
+
+
+                foreach (var img in imageDTO.ImageFiles)
                 {
-                    imageDTO.ImageFile.CopyTo(fileStream);
+                    string wRootPathe = Path.Combine(webHostEnvironment.WebRootPath, "Images");
+                    string ImageName = Guid.NewGuid().ToString() + "_" + img.FileName;
+                    string ImagePath = Path.Combine(wRootPathe, ImageName);
+
+                    using (FileStream fileStream = new FileStream(ImagePath, FileMode.Create))
+                    {
+                        img.CopyTo(fileStream);
+                    }
+
+                    Image image = new Image()
+                    {
+                        ImageURL = Path.Combine("/Images", ImageName),
+                        PatientID = imageDTO.Id,
+                        UploadedAt = imageDTO.UploadedAt,
+                        UserId = userId
+                    };
+
+                    unitOfWork.ImageService.Insert(image);
+                    unitOfWork.Save();
                 }
 
-                Image image = new Image()
-                {
-                    ImageURL = Path.Combine("/Images",ImageName),
-                    PatientID = imageDTO.Id,
-                    UploadedAt = imageDTO.UploadedAt,
-                    UserId = userId
-                    
-                };
-
-                unitOfWork.ImageService.Insert(image);
-                unitOfWork.Save();
-
-                ImageResponseDTO responseDTO = unitOfWork.ImageService.GetImageResponseDTO(image);
-
-                return Ok(new Response<ImageResponseDTO>(responseDTO,"Image Successfully Inserted"));  
+                return Ok(new Response<ModelAPIsBatchResponseDTO>(response, "Image Successfully Inserted"));
             }
             catch (Exception ex)
             {
