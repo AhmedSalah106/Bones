@@ -2,9 +2,10 @@
 {
     public class UploadImageDTO
     {
-        public int Id {  get; set; }
-        public IFormFile ImageFile { get; set; }
+        public int Id { get; set; }
+        public List<IFormFile> ImageFiles { get; set; }
         public DateTime UploadedAt { get; set; }
+        public string? BodyPart { get; set; }
 
     }
 }

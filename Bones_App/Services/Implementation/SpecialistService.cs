@@ -46,7 +46,6 @@ namespace Bones_App.Services.Implementation
                 Name = specialist.Name,
                 PhoneNumber = specialist.PhoneNumber
             };
-
             return specialistResponse;
         }
 
