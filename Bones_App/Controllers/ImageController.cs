@@ -38,8 +38,8 @@ namespace Bones_App.Controllers
             try
             {
 
-                // var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                var userId = "710f901a-ea6d-47e6-ac66-4ef8cb37c428";
+                 var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                //var userId = "710f901a-ea6d-47e6-ac66-4ef8cb37c428";
                 ModelAPIsBatchResponseDTO response = await unitOfWork.ModelIntegrationService.GetModelReport(imageDTO);
 
 
@@ -71,7 +71,39 @@ namespace Bones_App.Controllers
                     unitOfWork.Save();
                 }
 
-                return Ok(new Response<ModelAPIsBatchResponseDTO>(response, "Image Successfully Inserted"));
+                List<Guid> ids = response.Data.Select(data => data.Id).ToList();
+
+                List<GetModelReportResponseDTO> reports = new List<GetModelReportResponseDTO>();
+                foreach(var id in ids)
+                {
+
+                    reports.Add(await unitOfWork.ModelIntegrationService.GetModelResponse(id));
+                    await Task.Delay(2000);
+                }
+
+                    
+
+                return Ok(new Response<List<GetModelReportResponseDTO>>(reports));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    Message = "An error occurred while processing your request.",
+                    Details = ex.Message
+                });
+            }
+        }
+
+
+        [HttpGet("GetReportById")]
+        public async Task<IActionResult> GetReportById(Guid Id)
+        {
+            try
+            {
+                var result =await unitOfWork.ModelIntegrationService.GetModelResponse(Id);
+
+                return Ok(new Response<GetModelReportDataDTO>(result.Data));
             }
             catch (Exception ex)
             {
