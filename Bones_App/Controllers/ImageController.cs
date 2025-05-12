@@ -23,7 +23,7 @@ namespace Bones_App.Controllers
 
         private readonly IMediator mediator;
         public ImageController(IMediator mediator, IUnitOfWork unitOfWork
-            , IWebHostEnvironment webHostEnvironment)
+            ,IWebHostEnvironment webHostEnvironment)
         {
             this.mediator = mediator;
             this.unitOfWork = unitOfWork;
@@ -45,7 +45,6 @@ namespace Bones_App.Controllers
 
                 if (response.Is_Success == false)
                     return Ok(new Response<string>(response.Error_Message));
-
 
 
                 foreach (var img in imageDTO.ImageFiles)
