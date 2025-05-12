@@ -7,7 +7,7 @@ namespace Bones_App.Services.Interfaces
     public interface IChatService:IService<Message>
     {
         Message ConvertFromMessageDTOToMessage(MessageDTO messageDTO);
-        List<MessageDTO> GetMessages(string SenderID, string ReceiverId);
+        List<GetChatResponseDTO> GetMessages(string SenderID, string ReceiverId);
         MessageDTO ConvertFromMessageToMessageDTO(Message message);
     }
 }

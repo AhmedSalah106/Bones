@@ -38,13 +38,13 @@ namespace Bones_App.Services.Implementation
             return messageDTO;
         }
 
-        public List<MessageDTO> GetMessages(string SenderID, string ReceiverId)
+        public List<GetChatResponseDTO> GetMessages(string SenderID, string ReceiverId)
         {
-            List<MessageDTO>messages = chatRepository.GetAll()
+            List<GetChatResponseDTO>messages = chatRepository.GetAll()
                 .Where(msg=>(msg.SenderId == SenderID && msg.ReceiverId == ReceiverId)
                     ||(msg.SenderId==ReceiverId&&msg.ReceiverId==SenderID))
-                        .OrderByDescending(msg=>msg.SentAt)
-                         .Select(img=>ConvertFromMessageToMessageDTO(img)).ToList();
+                        .OrderBy(msg=>msg.SentAt)
+                         .Select(img=> new GetChatResponseDTO { Content = img.Content , ReceiverId = img.ReceiverId, SenderId = img.SenderId , SentAt = img.SentAt} ).ToList();
 
             return messages;
         }

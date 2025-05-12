@@ -30,13 +30,13 @@ namespace Bones_App.Controllers
             try
             {
                 string SenderId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                List<MessageDTO> messages = unitOfWork.ChatService.GetMessages(SenderId,chatDTO.ReceiverId);
+                List<GetChatResponseDTO> messages = unitOfWork.ChatService.GetMessages(SenderId,chatDTO.ReceiverId);
                 if(messages==null || messages.Count == 0)
                 {
                     return NotFound(new Response<string>("No Messages Yet"));
                 }
 
-                return Ok(new Response<List<MessageDTO>>(messages,"Messages successfully retrieved"));
+                return Ok(new Response<List<GetChatResponseDTO>>(messages,"Messages successfully retrieved"));
             }
             catch (Exception ex)
             {
@@ -80,6 +80,7 @@ namespace Bones_App.Controllers
             }
 
         }
+         
 
 
         [HttpGet("GetAllMessages")]

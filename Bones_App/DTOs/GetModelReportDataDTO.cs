@@ -6,7 +6,7 @@ namespace Bones_App.DTOs
     {
         [JsonPropertyName("id")]
         public string Id { get; set; }
-
+        
         [JsonPropertyName("status")]
         public string Status { get; set; }
 
