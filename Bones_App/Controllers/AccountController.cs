@@ -64,10 +64,18 @@ namespace Bones_App.Controllers
                     UserName = userDTO.Email,
                     Email = userDTO.Email,
                     PasswordHash = userDTO.Password,
-                    IsVerified = false
+                    IsVerified = false,
+                    FullName = userDTO.FullName
                 };
 
                 IdentityResult result = await unitOfWork.UserManager.CreateAsync(user, userDTO.Password);
+
+                LoginResponseUserDataDTO userDataDTO = new LoginResponseUserDataDTO()
+                {
+                    Email = userDTO.Email,
+                    UserName = userDTO.FullName,
+                    PhoneNumber = userDTO.PhoneNumber
+                };
 
                 if (result.Succeeded == true)
                 {
@@ -93,10 +101,8 @@ namespace Bones_App.Controllers
                         patient.User = user;
                         unitOfWork.PatientService.Insert(patient);
                         unitOfWork.Save();
+                        userDataDTO.Id = patient.Id;
 
-                        PatientResponseDTO patientResponseDTO = unitOfWork.PatientService.GetPatientResponeDTO(patient);
-
-                        return Ok(new Response<PatientResponseDTO>(patientResponseDTO, "Account Created Successfully"));
                     }
                     else if(userDTO.Role=="specialist")
                     {
@@ -131,14 +137,15 @@ namespace Bones_App.Controllers
                         unitOfWork.SpecialistService.Insert(specialist);
                         unitOfWork.Save();
 
-                        SpecialistResponseDTO specialistResponse = unitOfWork.SpecialistService.GetSpecialistDTO(specialist);
-                        return Ok(new Response<SpecialistResponseDTO>(specialistResponse, "Account Created Successfully"));
-
+                        userDataDTO.Id = specialist.Id;
                     }
                     else
                     {
                         return BadRequest(new Response<string>("Enter Valid Role"));
                     }
+
+
+
                 }
                 else
                 {
@@ -148,6 +155,43 @@ namespace Bones_App.Controllers
                         Errors = ModelState.Values.SelectMany(x => x.Errors).Select(x => x.ErrorMessage)
                     });
                 }
+
+
+                List<Claim> claims = new List<Claim>()
+                {
+                    new Claim(ClaimTypes.Email,userDTO.Email),
+                    new Claim(ClaimTypes.NameIdentifier,user.Id),
+                    new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString())
+                };
+
+                List<string> roles = (List<string>)await unitOfWork.UserManager.GetRolesAsync(user);
+
+                foreach (var role in roles)
+                {
+                    claims.Add(new Claim(ClaimTypes.Role, role));
+                }
+
+                SecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(unitOfWork.configuration["JWT:SecritKey"]));
+                SigningCredentials signing = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+                JwtSecurityToken jwt = new JwtSecurityToken(
+                    issuer: unitOfWork.configuration["JWT:ValidISS"],
+                    audience: unitOfWork.configuration["JWT:ValidAud"],
+                    claims: claims,
+                    expires: DateTime.Now.AddHours(1),
+                    signingCredentials: signing
+                    );
+
+                JWTResponseDTO jWTResponse = new JWTResponseDTO()
+                {
+                    Expire = jwt.ValidTo,
+                    Token = new JwtSecurityTokenHandler().WriteToken(jwt),
+                    UserId = user.Id,
+                    UserData = userDataDTO
+                };
+
+                return Ok(new Response<JWTResponseDTO>(jWTResponse, "Successfully Create Token"));
+
             }
             catch (Exception ex)
             {
@@ -157,8 +201,6 @@ namespace Bones_App.Controllers
                     Details = ex.Message
                 });
             }
-
-
         }
 
         [HttpPost("/Account/Login")]
