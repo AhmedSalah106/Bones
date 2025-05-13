@@ -80,14 +80,57 @@ namespace Bones_App.Controllers
             }
 
         }
-         
 
+
+        [HttpGet("GetAllUsersNamesSpookToSpecialist")]
+        public async Task<IActionResult> GetAllUsersNamesSpookToSpecialist(string SpecialistId)
+        {
+            try
+            {
+                List<UserNameWithIdDTO> PatientsChats =await unitOfWork.ChatService
+                                                .GetAllPatientsNamesWhoSpokeToSpecialist(SpecialistId);
+                if(PatientsChats==null||PatientsChats.Count==0)
+                {
+                    return Ok(new Response<string>("No Patients Found"));
+                }
+
+                return Ok(new Response<List<UserNameWithIdDTO>>(PatientsChats,"Patients Retrieved Successfully"));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    Message = "An error occurred while processing your request.",
+                    Details = ex.Message
+                });
+            }
+
+        }
+
+        //Just for test
 
         [HttpGet("GetAllMessages")]
-        public IActionResult GetAllMessages()
+        public async Task<IActionResult> GetAllMessages()
         {
             List<Message> messages = unitOfWork.ChatService.GetAll();
-            return Ok(new Response<List<Message>>(messages));
+            List<MessagesWithSenderNameDTO>messagesDTO = new List<MessagesWithSenderNameDTO>();
+            foreach (var message in messages)
+            {
+                ApplicationUser Sender = await unitOfWork.UserManager.FindByIdAsync(message.SenderId);
+                MessagesWithSenderNameDTO messagesWithSenderNameDTO = new MessagesWithSenderNameDTO()
+                {
+                    Content = message.Content,
+                    SenderId = message.SenderId,
+                    SenderName = Sender.UserName,
+                    SentAt = message.SentAt,
+                    ReceiverId = message.ReceiverId
+                };
+
+                messagesDTO.Add(messagesWithSenderNameDTO);
+            }
+
+
+            return Ok(new Response<List<MessagesWithSenderNameDTO>>( messagesDTO));
         }
     }
 }

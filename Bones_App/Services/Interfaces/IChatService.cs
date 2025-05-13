@@ -9,5 +9,6 @@ namespace Bones_App.Services.Interfaces
         Message ConvertFromMessageDTOToMessage(MessageDTO messageDTO);
         List<GetChatResponseDTO> GetMessages(string SenderID, string ReceiverId);
         MessageDTO ConvertFromMessageToMessageDTO(Message message);
+        Task<List<UserNameWithIdDTO>> GetAllPatientsNamesWhoSpokeToSpecialist(string SpecialistId);
     }
 }
