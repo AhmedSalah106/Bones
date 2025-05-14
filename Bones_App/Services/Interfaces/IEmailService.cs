@@ -7,7 +7,7 @@ namespace Bones_App.Services.Interfaces
     public interface IEmailService:IService<Emails>
     {
         Task<EmailResponseDTO> SendEmail(EmailDTO emailDto);
-        List<Emails>GetEmailsBySpecialistId(int SpecialistId);
+        List<Emails>GetEmailsBySpecialistId(string UserId);
         Emails GetEmails(EmailResponseDTO emailResponse);
     }
 }

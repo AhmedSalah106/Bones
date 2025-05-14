@@ -19,9 +19,9 @@ namespace Bones_App.Services.Implementation
             this.configuration = configuration;
         }
 
-        public List<Emails> GetEmailsBySpecialistId(int SpecialistId)
+        public List<Emails> GetEmailsBySpecialistId(string UserId)
         {
-            List<Emails> emails = emailRepository.GetAll().Where(email=>email.SpecialistId == SpecialistId).ToList();
+            List<Emails> emails = emailRepository.GetAll().Where(email=>email.UserId == UserId).ToList();
             return emails;
         }
 
@@ -54,7 +54,7 @@ namespace Bones_App.Services.Implementation
                 Body = emailDto.Body,
                 From = fromEmail,
                 Subject = emailDto.Subject,
-                SpecialistId = emailDto.SpecialistId
+                UserID = emailDto.UserId
             };
 
             return responseDTO;
@@ -68,7 +68,7 @@ namespace Bones_App.Services.Implementation
                 Body = emailResponse.Body,
                 From = emailResponse.From,
                 Subject = emailResponse.Subject,
-                SpecialistId = emailResponse.SpecialistId
+                UserId = emailResponse.UserID
             };
             return email;
         }

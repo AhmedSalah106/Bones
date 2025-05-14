@@ -322,9 +322,106 @@ namespace Bones_App.Controllers
         }
 
         [HttpPost("ForgetPassword")]
-        public IActionResult ForgetPassword()
+        public async Task<IActionResult> ForgetPassword(ForgetPasswordRequestDTO forgetPassword)
         {
-            return Ok();
+            try
+            {
+                ApplicationUser user = await unitOfWork.UserManager.FindByEmailAsync(forgetPassword.Email);
+                if(user == null)
+                {
+                    return NotFound(new Response<string>("No user found by this email"));
+                }
+
+                var code = new Random().Next(1000, 9999).ToString();
+                user.PasswordResetCode = code;
+                user.PasswordResetCodeExpiration = DateTime.UtcNow.AddMinutes(15);
+
+                await unitOfWork.UserManager.UpdateAsync(user);
+                EmailDTO email = new EmailDTO()
+                {
+                    DateSent = DateTime.UtcNow,
+                    Body = $"Your password reset code is {code}",
+                    Subject = "Reset Code",
+                    To = forgetPassword.Email,
+                    UserId = user.Id
+                };
+
+                 await unitOfWork.EmailService.SendEmail(email);
+
+
+                return Ok(new Response<string>() { Success = true , Message = "Code Send Successfully"});
+
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    Message = "An error occurred while processing your request.",
+                    Details = ex.Message
+                });
+            }
         }
+
+        [HttpPost("VerifyResetCode")]
+        public async Task<IActionResult> VerifyResetCode(VerifyResetCodeRequestDTO resetCode)
+        {
+            try
+            {
+                ApplicationUser user = await unitOfWork.UserManager.FindByEmailAsync(resetCode.Email);
+
+                if (user == null || user.PasswordResetCodeExpiration < DateTime.UtcNow || user.PasswordResetCode != resetCode.Code)
+                {
+                    return NotFound(new Response<string>("Invalid Or Expired Code"));
+                }
+
+                return Ok(new Response<string>() { Success = true, Message = "Ok" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    Message = "An error occurred while processing your request.",
+                    Details = ex.Message
+                });
+            }
+        }
+
+        [HttpPost("ResetPassword")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordRequestDTO resetPassword)
+        {
+            try
+            {
+                ApplicationUser user = await unitOfWork.UserManager.FindByEmailAsync(resetPassword.Email);
+                if (user == null || user.PasswordResetCode != resetPassword.Code || user.PasswordResetCodeExpiration < DateTime.UtcNow)
+                {
+                    return BadRequest(new Response<string>("Invalid or expired code."));
+                }
+
+                var resetToken = await unitOfWork.UserManager.GeneratePasswordResetTokenAsync(user);
+                var result = await unitOfWork.UserManager.ResetPasswordAsync(user, resetToken, resetPassword.NewPassword);
+
+                if (!result.Succeeded)
+                {
+                    return BadRequest(new Response<string>(result.Errors.ToString()));
+                }
+
+                user.PasswordResetCode = null;
+                user.PasswordResetCodeExpiration = null;
+                await unitOfWork.UserManager.UpdateAsync(user);
+
+                return Ok(new Response<string>() { Success = true,Message = "Password Successfully Reset"});
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    Message = "An error occurred while processing your request.",
+                    Details = ex.Message
+                });
+            }
+        }
+
     }
 }

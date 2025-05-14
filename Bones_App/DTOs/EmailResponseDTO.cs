@@ -6,6 +6,6 @@
        public string Body {  get; set; }
        public string From { get; set; }
        public string Subject {  get; set; }
-       public int SpecialistId {  get; set; }
+       public string UserID {  get; set; }
     }
 }
