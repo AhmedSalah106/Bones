@@ -465,5 +465,34 @@ namespace Bones_App.Controllers
                 });
             }
         }
+
+
+        [HttpGet("GetSpecialistsNotVerified")]
+        public IActionResult GetSpecialistsNotVerified()
+        {
+            try
+            {
+                List<SpecialistsNotVerifiedDTO> specialists =
+                        unitOfWork.SpecialistService.GetSpecialistsNotVerified();
+
+                if(specialists ==  null || specialists.Count == 0)
+                {
+                    return Ok(new Response<string>("There are no unverified specialists currently"));
+                }
+
+                return Ok(new Response<List<SpecialistsNotVerifiedDTO>>(specialists, "Specialists Successfully Retrieved"));
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    Message = "An error occurred while processing your request.",
+                    Details = ex.Message
+                });
+            }
+        }
+
+
     }
 }
