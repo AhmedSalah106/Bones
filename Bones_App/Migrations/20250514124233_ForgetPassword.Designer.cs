@@ -4,6 +4,7 @@ using Bones_App.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Bones_App.Migrations
 {
     [DbContext(typeof(BonesContext))]
-    partial class BonesContextModelSnapshot : ModelSnapshot
+    [Migration("20250514124233_ForgetPassword")]
+    partial class ForgetPassword
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -97,6 +100,7 @@ namespace Bones_App.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PasswordResetCode")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("PasswordResetCodeExpiration")
@@ -150,15 +154,16 @@ namespace Bones_App.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("SpecialistId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Subject")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("id");
+
+                    b.HasIndex("SpecialistId");
 
                     b.ToTable("Emails");
                 });
@@ -522,6 +527,17 @@ namespace Bones_App.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Bones_App.Models.Emails", b =>
+                {
+                    b.HasOne("Bones_App.Models.Specialist", "Specialist")
+                        .WithMany()
+                        .HasForeignKey("SpecialistId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Specialist");
                 });
 
             modelBuilder.Entity("Bones_App.Models.Image", b =>

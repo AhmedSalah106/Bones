@@ -6,6 +6,6 @@
         public string Subject {  get; set; }
         public string Body { get; set; }
         public DateTime DateSent { get; set; }
-        public int SpecialistId {  get; set; }
+        public string UserId {  get; set; }
     }
 }

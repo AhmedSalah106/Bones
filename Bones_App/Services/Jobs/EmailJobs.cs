@@ -21,9 +21,8 @@ namespace Bones_App.Services.Jobs
         {
             EmailResponseDTO emailResponse = await emailService.SendEmail(emailDTO);
             Emails email = emailService.GetEmails(emailResponse);
-            email.Specialist = unitOfWork.SpecialistService.GetById(email.SpecialistId);
 
-            email.SpecialistId = email.SpecialistId;
+            email.UserId = email.UserId;
 
             emailService.Insert(email);
             unitOfWork.Save();

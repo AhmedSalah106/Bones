@@ -7,5 +7,7 @@ namespace Bones_App.Models
     {
         public string FullName {  get; set; } 
         public bool IsVerified {  get; set; }
+        public string? PasswordResetCode { get; set; }
+        public DateTime? PasswordResetCodeExpiration { get; set; }
     }
 }

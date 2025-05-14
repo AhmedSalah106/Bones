@@ -397,7 +397,7 @@ namespace Bones_App.Controllers
                     Body = $@"You Have Been Accepted in our App Bones_App" ,
                     To = specialist.Email,
                     DateSent = DateTime.UtcNow,
-                    SpecialistId = Id,
+                    UserId = user.Id,
                 };
 
                 BackgroundJob.Enqueue<EmailJobs>(Email => Email.SendEmail(email));

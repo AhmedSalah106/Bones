@@ -29,9 +29,8 @@ namespace Bones_App.Controllers
                 EmailResponseDTO emailResponse = await emailService.SendEmail(emailDto);
 
                 Emails email= unitOfWork.EmailService.GetEmails(emailResponse);
-                email.SpecialistId = emailDto.SpecialistId;
-                email.Specialist = unitOfWork.SpecialistService.GetById(emailDto.SpecialistId);
-
+                email.UserId = emailDto.UserId;
+                
                 unitOfWork.EmailService.Insert(email);
                 unitOfWork.Save();
 
@@ -68,7 +67,7 @@ namespace Bones_App.Controllers
         }
 
         [HttpGet("GetAllSpecialistEmails")]
-        public IActionResult GetAllSpecialistEmails(int SpecialistID)
+        public IActionResult GetAllSpecialistEmails(string SpecialistID)
         {
             try
             {

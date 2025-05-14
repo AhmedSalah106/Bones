@@ -14,7 +14,6 @@ namespace Bones_App.Models
         public string Body { get; set; }
         public DateTime DateSent { get; set; }
         [ForeignKey("Specialist")]
-        public int SpecialistId {  get; set; }
-        public Specialist? Specialist { get; set; }
+        public string UserId {  get; set; }
     }
 }
