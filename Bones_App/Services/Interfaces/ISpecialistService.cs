@@ -12,5 +12,6 @@ namespace Bones_App.Services.Interfaces
         SpecialistResponseDTO RestoreSpecialist(int Id);
         bool SoftDeleteSpecialist(int Id);
         Specialist GetByUserId(string UserId);
+        List<SpecialistsNotVerifiedDTO> GetSpecialistsNotVerified();
     }
 }

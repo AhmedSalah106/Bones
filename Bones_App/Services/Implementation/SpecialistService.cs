@@ -83,5 +83,14 @@ namespace Bones_App.Services.Implementation
         {
             return reposiotry.GetByUserId(UserId);
         }
+
+        public List<SpecialistsNotVerifiedDTO>GetSpecialistsNotVerified()
+        {
+            List<SpecialistsNotVerifiedDTO> specialists = GetAll()
+                            .Where(s=>s.IsVerified==false).Select(s=>new SpecialistsNotVerifiedDTO 
+                                 { CertificateUrl = s.CertificateUrl , Id = s.Id}).ToList();
+
+            return specialists;
+        }
     }
 }

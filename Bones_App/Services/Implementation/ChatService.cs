@@ -5,6 +5,7 @@ using Bones_App.Services.Interfaces;
 using Bones_App.Services.SharedService;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 namespace Bones_App.Services.Implementation
@@ -19,6 +20,7 @@ namespace Bones_App.Services.Implementation
             this.chatRepository = chatRepository;
         }
 
+        
         public Message ConvertFromMessageDTOToMessage(MessageDTO messageDTO)
         {
             Message message = new Message()
