@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Bones_App.Models
 {
@@ -9,5 +10,7 @@ namespace Bones_App.Models
         public bool IsVerified {  get; set; }
         public string? PasswordResetCode { get; set; }
         public DateTime? PasswordResetCodeExpiration { get; set; }
+
+
     }
 }

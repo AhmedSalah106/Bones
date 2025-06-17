@@ -5,8 +5,6 @@ namespace Bones_App.DTOs
     public class AcceptSpecialistDTo
     {
         public int Id { get; set; }
-
-        [EmailAddress]
-        public string Email {  get; set; }
+        public IFormFile CertificateImage { get; set; }
     }
 }
