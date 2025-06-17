@@ -47,6 +47,7 @@ namespace Bones_App.Controllers
                     return Ok(new Response<string>(response.Error_Message));
 
 
+
                 foreach (var img in imageDTO.ImageFiles)
                 {
                     string wRootPathe = Path.Combine(webHostEnvironment.WebRootPath, "Images");

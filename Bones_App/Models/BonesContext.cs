@@ -6,12 +6,7 @@ namespace Bones_App.Models
     public class BonesContext : IdentityDbContext<ApplicationUser>  
     {
         public BonesContext(DbContextOptions options) :base(options) { }
-        //protected override void OnModelCreating(ModelBuilder builder)
-        //{
-        //    base.OnModelCreating(builder);
-
-        //    builder.ApplyConfigurationsFromAssembly(typeof(PatientConfiguration).Assembly);
-        //}
+        
         public DbSet<Patient> Patients { get; set; }
         public DbSet<Image> Images { get; set; }
         public DbSet<Specialist> Specialists { get; set; }

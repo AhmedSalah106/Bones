@@ -49,9 +49,9 @@ namespace Bones_App.Services.Implementation
             var fileContent = new ByteArrayContent(ms.ToArray());
             fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(imageFile.ContentType);
 
-            content.Add(fileContent, "image", imageFile.FileName); // Use correct key expected by model API
+            content.Add(fileContent, "image", imageFile.FileName); 
 
-            var response = await httpClient.PostAsync("https://khaldoun52-final-models.hf.space/v1/api/medical-image-analysis/single", content); // Update with actual URL
+            var response = await httpClient.PostAsync("https://khaldoun52-final-models.hf.space/v1/api/medical-image-analysis/single", content); 
             response.EnsureSuccessStatusCode();
 
             var jsonString = await response.Content.ReadAsStringAsync();

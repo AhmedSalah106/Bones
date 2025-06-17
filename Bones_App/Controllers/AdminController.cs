@@ -415,6 +415,7 @@ namespace Bones_App.Controllers
                 });
             }
         }
+
         [HttpGet("GetTotalPayments")]
         public IActionResult GetTotalPayments()
         {
@@ -467,6 +468,8 @@ namespace Bones_App.Controllers
         }
 
 
+
+
         [HttpGet("GetSpecialistsNotVerified")]
         public IActionResult GetSpecialistsNotVerified()
         {
@@ -492,6 +495,7 @@ namespace Bones_App.Controllers
                 });
             }
         }
+
 
 
     }
