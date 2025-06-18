@@ -10,6 +10,7 @@ namespace Bones_App.Models
         public bool IsVerified {  get; set; }
         public string? PasswordResetCode { get; set; }
         public DateTime? PasswordResetCodeExpiration { get; set; }
+        public bool IsPaidUser { get; set; } = false;
 
 
     }
