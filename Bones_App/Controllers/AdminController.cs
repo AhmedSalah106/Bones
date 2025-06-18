@@ -416,6 +416,43 @@ namespace Bones_App.Controllers
             }
         }
 
+
+        [HttpPost("RejectSpecialist")]
+        public async Task<IActionResult> RejectSpecialist(int Id)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(new Response<string>(ModelState.ToString()));
+                }
+
+                SpecialistResponseDTO specialistResponse = unitOfWork.SpecialistService.GetSpecialistDTO(unitOfWork.SpecialistService.GetById(Id));
+
+                if (specialistResponse == null)
+                {
+                    return NotFound(new Response<string>("No Specialist founded by this Id"));
+                }
+
+                string UserId = specialistResponse.UserId;
+                ApplicationUser user =await unitOfWork.UserManager.FindByIdAsync(UserId);
+                unitOfWork.SpecialistService.Delete(Id);
+
+                await unitOfWork.UserManager.DeleteAsync(user);
+                unitOfWork.Save();
+                return Ok(new Response<SpecialistResponseDTO>(specialistResponse ,$"Specialist {specialistResponse.Name} Successfully Deleted")); 
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    Message = "An error occurred while processing your request.",
+                    Details = ex.Message
+                });
+            }
+        }
+
         [HttpGet("GetTotalPayments")]
         public IActionResult GetTotalPayments()
         {

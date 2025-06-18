@@ -40,6 +40,9 @@ namespace Bones_App.Controllers
 
                  var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
                 //var userId = "710f901a-ea6d-47e6-ac66-4ef8cb37c428";
+
+
+
                 ModelAPIsBatchResponseDTO response = await unitOfWork.ModelIntegrationService.GetModelReport(imageDTO);
 
 
